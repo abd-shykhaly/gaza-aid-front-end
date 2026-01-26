@@ -118,7 +118,7 @@ export default function UserProfile() {
       fetchUserPosts();
 
       // Navigate to the conversation
-      window.location.href = `/messages/${conversationResponse.id}`;
+      navigate(`/messages/${conversationResponse.id}`);
     } catch (error: any) {
       showError(error.message || "فشل تسجيل المشاركة");
     }
