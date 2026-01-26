@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
 import { api } from "../utils/api";
 import { useToast } from "../contexts/ToastContext";
 
@@ -21,6 +23,7 @@ export default function ContactButton({
   const { showSuccess, showError } = useToast();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
   const currentUserId = currentUser.id;
+  const navigate = useNavigate();
 
   const handleContact = async () => {
     if (currentUserId === postOwnerId) {
@@ -45,7 +48,7 @@ export default function ContactButton({
       setMessage("");
 
       // Navigate to the conversation
-      window.location.href = `/messages/${conversationResponse.id}`;
+      navigate(`/messages/${conversationResponse.id}`);
     } catch (error: any) {
       // If conversation start fails, send a contact request
       try {
@@ -79,85 +82,87 @@ export default function ContactButton({
         تواصل
       </button>
 
-      {showModal && (
-        <div className="modal-backdrop animate-fade-in-up px-4">
-          <div className="modal-content max-w-md w-full">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg sm:text-xl font-bold gradient-text">
-                التواصل مع {postOwnerUsername}
-              </h3>
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setMessage("");
-                }}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+      {showModal &&
+        createPortal(
+          <div className="modal-backdrop animate-fade-in-up px-4">
+            <div className="modal-content max-w-md w-full">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg sm:text-xl font-bold gradient-text">
+                  التواصل مع {postOwnerUsername}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setMessage("");
+                  }}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
+                  <svg
+                    className="w-5 h-5 sm:w-6 sm:h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="mb-6">
+                <p className="text-gray-600 mb-4 leading-relaxed text-sm sm:text-base">
+                  يمكنك إرسال رسالة مباشرة أو طلب تواصل. سيتلقى{" "}
+                  {postOwnerUsername} إشعاراً بطلبك.
+                </p>
+
+                <div>
+                  <label className="label-field">رسالة (اختياري)</label>
+                  <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    rows={4}
+                    className="input-field resize-none text-sm sm:text-base"
+                    placeholder="اكتب رسالة قصيرة..."
+                    disabled={isSubmitting}
                   />
-                </svg>
-              </button>
-            </div>
+                </div>
+              </div>
 
-            <div className="mb-6">
-              <p className="text-gray-600 mb-4 leading-relaxed text-sm sm:text-base">
-                يمكنك إرسال رسالة مباشرة أو طلب تواصل. سيتلقى{" "}
-                {postOwnerUsername} إشعاراً بطلبك.
-              </p>
-
-              <div>
-                <label className="label-field">رسالة (اختياري)</label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows={4}
-                  className="input-field resize-none text-sm sm:text-base"
-                  placeholder="اكتب رسالة قصيرة..."
+              <div className="flex gap-3">
+                <button
+                  onClick={handleContact}
                   disabled={isSubmitting}
-                />
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:hover:scale-100 text-sm sm:text-base"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span className="hidden sm:inline">جاري الإرسال...</span>
+                      <span className="sm:hidden">إرسال...</span>
+                    </span>
+                  ) : (
+                    "إرسال"
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setMessage("");
+                  }}
+                  disabled={isSubmitting}
+                  className="flex-1 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-800 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:hover:scale-100 text-sm sm:text-base"
+                >
+                  إلغاء
+                </button>
               </div>
             </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={handleContact}
-                disabled={isSubmitting}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:hover:scale-100 text-sm sm:text-base"
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span className="hidden sm:inline">جاري الإرسال...</span>
-                    <span className="sm:hidden">إرسال...</span>
-                  </span>
-                ) : (
-                  "إرسال"
-                )}
-              </button>
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setMessage("");
-                }}
-                disabled={isSubmitting}
-                className="flex-1 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-800 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:hover:scale-100 text-sm sm:text-base"
-              >
-                إلغاء
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
