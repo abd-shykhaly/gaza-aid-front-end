@@ -85,7 +85,7 @@ export default function PostDetail() {
       fetchPost(post.id);
 
       // Navigate to the conversation
-      window.location.href = `/messages/${conversationResponse.id}`;
+      navigate(`/messages/${conversationResponse.id}`);
     } catch (error: any) {
       showError(error.message || "فشل تسجيل المشاركة");
     }
