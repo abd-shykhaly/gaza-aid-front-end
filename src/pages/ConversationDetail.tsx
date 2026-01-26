@@ -89,7 +89,7 @@ export default function ConversationDetail() {
   return (
     <div className="max-w-4xl mx-auto px-2 py-4 sm:px-4">
       <button
-        onClick={() => navigate("/messages")}
+        onClick={() => navigate("..")}
         className="mb-4 text-gray-600 hover:text-gray-900 flex items-center font-medium transition-colors duration-200 hover:-translate-x-1 transform"
       >
         ← العودة للرسائل
