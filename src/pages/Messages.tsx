@@ -100,7 +100,7 @@ export default function Messages() {
               key={conversation.id}
               className="conversation-item animate-fade-in-up cursor-pointer"
               style={{ animationDelay: `${index * 0.1}s` }}
-              onClick={() => navigate(`/messages/${conversation.id}`)}
+              onClick={() => navigate(`${conversation.id}`)}
             >
               <div className="flex items-start space-x-reverse space-x-4">
                 {/* Avatar */}
