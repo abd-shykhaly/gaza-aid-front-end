@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
 import { Post } from "../types";
 import { useToast } from "../contexts/ToastContext";
@@ -17,6 +17,7 @@ export default function Feed() {
   });
   const { showSuccess, showError } = useToast();
   const currentUser = authStorage.getUser();
+  const navigate = useNavigate();
   const currentUserId = currentUser?.id || 0;
 
   console.log("Current user:", currentUser);
@@ -93,7 +94,7 @@ export default function Feed() {
       fetchPosts();
 
       // Navigate to the conversation
-      window.location.href = `/messages/${conversationResponse.id}`;
+      navigate(`/messages/${conversationResponse.id}`);
     } catch (error: any) {
       showError(error.message || "فشل تسجيل المشاركة");
     }
